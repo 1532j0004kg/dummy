@@ -1,6 +1,40 @@
 
-$(document).ready(function(){
+function registerUser(){
+	  var name = prompt("Please! Enter your name", "");
+	  var college = prompt("Please! Enter your college name", "");
+	  
+	  if (name != null && college != null) {
+    const r = new Request("https://xianze-2k19.herokuapp.com/v1alpha1/graphql");
+  const o = {
+    method: 'POST',
+    body: JSON.stringify({
+      query: 
+        `mutation insert_participant($name: String!, $college: String!){
+  insert_participant(
+    objects: [
+      {
+		name: $name,
+		college : $college,
+      }
+    ]
+  ) {
+    returning {
+      name    
+    }
+  }
+}`,
+variables: {name: name, college: college}
+    })
+  };
+  fetch(r, o).then(function(response) {
+    return response.json();
+  }).then(function(myJson) {
+    alert(myJson.data.insert_participant.returning[0].name + " is registered successfully");
+  });
+  }
+}
 	
+$(document).ready(function(){	
 	"use strict";
 
 	var window_width 	 = $(window).width(),
@@ -22,9 +56,9 @@ $(document).ready(function(){
         gallery:{
         enabled:true
         }
-    });
-
-
+    });	
+	
+	
     $('.play-btn').magnificPopup({
         type: 'iframe',
         mainClass: 'mfp-fade',
